@@ -51,7 +51,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -165,7 +165,7 @@ class TeamServiceTest {
     user4.setUserId(1L);
     user4.setUsername("janedoe");
     teamService.createTeam(user4);
-    verify(leagueService, atLeast(1)).findNewestLeague();
+    verify(leagueService, atLeast(1)).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
     verify(league, atLeast(1)).getTeams();
     verify(league).setActiveTimestamp(Mockito.any());
@@ -194,7 +194,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -367,7 +367,7 @@ class TeamServiceTest {
     user6.setUserId(1L);
     user6.setUsername("janedoe");
     teamService.createTeam(user6);
-    verify(leagueService, atLeast(1)).findNewestLeague();
+    verify(leagueService, atLeast(1)).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
     verify(league, atLeast(1)).getTeams();
     verify(league).setActiveTimestamp(Mockito.any());
@@ -389,7 +389,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -449,7 +449,7 @@ class TeamServiceTest {
     team2.setTeamPoints(10.0d);
     team2.setUser(user2);
     teamService.addOneTeamToLeague(team2);
-    verify(leagueService).findNewestLeague();
+    verify(leagueService).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
   }
 
@@ -470,7 +470,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -530,7 +530,7 @@ class TeamServiceTest {
     team2.setTeamPoints(10.0d);
     team2.setUser(user2);
     teamService.addOneTeamToLeague(team2);
-    verify(leagueService).findNewestLeague();
+    verify(leagueService).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
     verify(league).getTeams();
     verify(league).setActiveTimestamp(Mockito.any());

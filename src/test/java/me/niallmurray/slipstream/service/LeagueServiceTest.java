@@ -57,7 +57,7 @@ class LeagueServiceTest {
     League league = createNewLeague();
     when(leagueRepository.save(Mockito.any())).thenReturn(league);
     when(leagueRepository.findAll()).thenReturn(new ArrayList<>());
-    assertSame(league, leagueService.findNewestLeague());
+    assertSame(league, leagueService.findAvailableLeague());
     verify(leagueRepository).save(Mockito.any());
     verify(leagueRepository, atLeast(1)).findAll();
   }
@@ -72,7 +72,7 @@ class LeagueServiceTest {
     leagueList.add(league2);
     when(leagueRepository.save(Mockito.any())).thenReturn(league);
     when(leagueRepository.findAll()).thenReturn(leagueList);
-    assertSame(league2, leagueService.findNewestLeague());
+    assertSame(league2, leagueService.findAvailableLeague());
     verify(leagueRepository).findAll();
   }
 

@@ -29,9 +29,8 @@ public class League {
   private String activeTimestamp;
   @ManyToMany(
           fetch = FetchType.LAZY,
-          cascade = {CascadeType.MERGE})
+          cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private List<Team> teams = new ArrayList<>();
-
 
   @Override
   public String toString() {

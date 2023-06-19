@@ -17,8 +17,6 @@ import java.util.Objects;
         uniqueConstraints =
         @UniqueConstraint(columnNames = {"league_league_id", "firstPickNumber"}))
 public class Team {
-  @ManyToOne()
-  League league;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long teamId;
@@ -26,12 +24,16 @@ public class Team {
   @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   //1-1 for now, see comment in User.class
   private User user;
+  @ManyToOne()
+  League league;
   @Column()
   private Integer firstPickNumber;
   @Column()
   private Integer secondPickNumber;
   @Column()
   private String teamName;
+  @Column()
+  private Boolean isTestTeam;
   @Column()
   private Double startingPoints;
   @Column()
@@ -40,7 +42,7 @@ public class Team {
   private Integer ranking;
   @Column()
   @ManyToMany(fetch = FetchType.LAZY,
-          cascade = {CascadeType.MERGE, CascadeType.PERSIST},
+          cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH},
           mappedBy = "teams")
   private List<Driver> drivers = new ArrayList<>(6);
 

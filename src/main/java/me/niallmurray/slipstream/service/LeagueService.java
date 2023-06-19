@@ -19,8 +19,10 @@ public class LeagueService {
   private DriverService driverService;
 
   public League createLeague() {
+
+    deleteEmptyLeagues();
     League league = new League();
-    league.setLeagueName("League # " + (leagueRepository.findAll().size() + 1));
+    league.setLeagueName("League # " + findNewestLeagueId());
     league.setTeams(new ArrayList<>());
     league.setIsActive(false);
     league.setCreationTimestamp(
@@ -29,13 +31,27 @@ public class LeagueService {
     return leagueRepository.save(league);
   }
 
-  public League findNewestLeague() {
+  public Long findNewestLeagueId() {
     List<League> allLeagues = leagueRepository.findAll();
+    if (allLeagues.isEmpty()) {
+      return 1L;
+    }
+    return allLeagues.get(allLeagues.size() - 1).getLeagueId() + 1;
+  }
+
+  public League findAvailableLeague() {
+    List<League> allLeagues = findAll();
+
     if (allLeagues.isEmpty()) {
       return createLeague();
     }
-    // If leagues exist, get the latest created (last in list)
-    return allLeagues.get(allLeagues.size() - 1);
+    // If no empty leagues exist, get the latest created (last in list)
+    League newestInactiveLeague = allLeagues.get(allLeagues.size() - 1);
+    // Check if newest league is active, if true, return new league instead.
+    if (Boolean.TRUE.equals(newestInactiveLeague.getIsActive())) {
+      newestInactiveLeague = createLeague();
+    }
+    return newestInactiveLeague;
   }
 
   public int getCurrentPickNumber(League league) {
@@ -50,6 +66,15 @@ public class LeagueService {
     league.setIsActive(true);
     league.setActiveTimestamp(
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")));
+  }
+
+  public void deleteEmptyLeagues(){
+    List<League> allLeagues = leagueRepository.findAll();
+    for (League league : allLeagues) {
+      if (league.getTeams().isEmpty()) {
+        leagueRepository.delete(league);
+      }
+    }
   }
 
   public List<League> findAll() {

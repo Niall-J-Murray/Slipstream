@@ -8,6 +8,8 @@ import me.niallmurray.slipstream.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +30,7 @@ public class TeamService {
     Team team = new Team();
     team.setUser(user);
 
-    if (teamNameExists(user.getTeam().getTeamName())) {
+    if (isUniqueTeamName(user.getTeam().getTeamName())) {
       team.setTeamName(user.getTeam().getTeamName());
       user.setTeam(team);
       user.setEmail(user.getEmail());
@@ -37,12 +39,33 @@ public class TeamService {
     team.setSecondPickNumber(21 - team.getFirstPickNumber()); //So players get 1&20, 2&19 etc. up to 10&11.
     team.setRanking(team.getFirstPickNumber());
     team.setStartingPoints(0.0);
-    team.setLeague(leagueService.findNewestLeague());
+    team.setIsTestTeam(false);
+    team.setLeague(leagueService.findAvailableLeague());
+    addOneTeamToLeague(team);
+  }
+
+  public void createTestTeam(User user) {
+    String leagueNumber = user.getTeam().getLeague().getLeagueName().substring(8);
+    int leagueSize = getAllTeamsByLeague(user.getTeam().getLeague()).size();
+    String teamName = "Team " + leagueNumber + "-" + (leagueSize + 1);
+    User testUser = userService.createTestUser(teamName);
+
+    Team team = new Team();
+    team.setUser(testUser);
+    team.setTeamName(teamName);
+    team.setFirstPickNumber(randomPickNumber());
+    team.setSecondPickNumber(21 - team.getFirstPickNumber());
+    team.setRanking(team.getFirstPickNumber());
+    team.setStartingPoints(0.0);
+    team.setIsTestTeam(true);
+    team.setLeague(leagueService.findAvailableLeague());
+    testUser.setTeam(team);
+
     addOneTeamToLeague(team);
   }
 
   public void addOneTeamToLeague(Team team) {
-    League league = leagueService.findNewestLeague();
+    League league = leagueService.findAvailableLeague();
     List<Team> teams = league.getTeams();
     teams.add(team);
     league.setTeams(teams);
@@ -53,7 +76,7 @@ public class TeamService {
     RandomGenerator random = RandomGenerator.getDefault();
     int pickNumber = random.nextInt(1, 11);
 
-    for (Team team : leagueService.findNewestLeague().getTeams()) {
+    for (Team team : leagueService.findAvailableLeague().getTeams()) {
       if (team.getFirstPickNumber() == pickNumber) {
         pickNumber = randomPickNumber();
       }
@@ -61,7 +84,7 @@ public class TeamService {
     return pickNumber;
   }
 
-  public boolean teamNameExists(String teamName) {
+  public boolean isUniqueTeamName(String teamName) {
     List<Team> allTeams = teamRepository.findAll();
     for (Team team : allTeams) {
       if (Objects.equals(team.getTeamName(), teamName))
@@ -91,6 +114,25 @@ public class TeamService {
     userService.save(user);
     teamRepository.save(team);
     driverService.save(driver);
+  }
+
+  public void addDriverToTestTeam(Long userId, Long driverId) {
+    User user = userService.findById(userId);
+    User testUser = userService.findByUserName(getNextToPick(user.getTeam().getLeague()));
+    addDriverToTeam(testUser.getUserId(), driverId);
+  }
+
+  public Boolean isTestPick(League league) {
+    return getNextToPick(league) != null && (getNextToPick(league).startsWith("Test User"));
+  }
+
+  public Boolean hasTestTeams(League league) {
+    List<Team> teamsInLeague = getAllTeamsByLeague(league);
+    for (Team team : teamsInLeague) {
+      if (Boolean.TRUE.equals(team.getIsTestTeam()))
+        return true;
+    }
+    return false;
   }
 
   public boolean timeToPick(League league, Long teamId) {
@@ -132,7 +174,6 @@ public class TeamService {
     return teamRepository.saveAll(teams);
   }
 
-
   public List<Team> getAllTeams() {
     return teamRepository.findAll();
   }
@@ -162,6 +203,27 @@ public class TeamService {
     teamRepository.delete(team);
     userService.save(user);
     leagueService.save(league);
+  }
+
+  public void deleteAllTestTeams(League league) {
+    List<Team> teamsInLeague = getAllTeamsByLeague(league);
+    for (Team team : teamsInLeague) {
+      if (Boolean.TRUE.equals(team.getIsTestTeam())) {
+        deleteTeam(team);
+        userService.delete(team.getUser());
+      }
+    }
+  }
+
+  public void deleteExpiredTestTeams() {
+    List<League> allLeagues = leagueService.findAll();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
+    for (League league : allLeagues) {
+      LocalDateTime creationTime = LocalDateTime.parse(league.getCreationTimestamp(), formatter);
+      if (LocalDateTime.now().minusHours(24).isAfter(creationTime)) {
+        deleteAllTestTeams(league);
+      }
+    }
   }
 
   public Team findById(Long teamId) {
