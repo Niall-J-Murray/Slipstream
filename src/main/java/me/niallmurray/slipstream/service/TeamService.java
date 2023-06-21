@@ -213,6 +213,7 @@ public class TeamService {
         userService.delete(team.getUser());
       }
     }
+    league.setIsTestLeague(false);
   }
 
   public void deleteExpiredTestTeams() {

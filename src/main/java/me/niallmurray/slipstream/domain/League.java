@@ -24,6 +24,8 @@ public class League {
   @Column()
   private String creationTimestamp;
   @Column()
+  private Boolean isTestLeague;
+  @Column()
   private Boolean isActive;
   @Column()
   private String activeTimestamp;

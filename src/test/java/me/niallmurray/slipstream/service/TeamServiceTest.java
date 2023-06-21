@@ -1,6 +1,9 @@
 package me.niallmurray.slipstream.service;
 
-import me.niallmurray.slipstream.domain.*;
+import me.niallmurray.slipstream.domain.Driver;
+import me.niallmurray.slipstream.domain.League;
+import me.niallmurray.slipstream.domain.Team;
+import me.niallmurray.slipstream.domain.User;
 import me.niallmurray.slipstream.repositories.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +13,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

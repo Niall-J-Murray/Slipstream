@@ -46,8 +46,8 @@ public class LoginController {
   @GetMapping("/login")
   public String getLogin(@AuthenticationPrincipal User user, ModelMap model) {
     List<String> activeUsers = activeUserStore.getUsers();
-    if(activeUsers.size() < 2){
-     adminController.addDrivers();
+    if (activeUsers.size() < 2) {
+      adminController.addDrivers();
     }
 
     if (user != null && activeUsers.contains(user.getUsername())) {

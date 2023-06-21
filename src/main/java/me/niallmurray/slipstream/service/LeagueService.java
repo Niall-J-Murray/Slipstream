@@ -24,6 +24,7 @@ public class LeagueService {
     League league = new League();
     league.setLeagueName("League # " + findNewestLeagueId());
     league.setTeams(new ArrayList<>());
+    league.setIsTestLeague(false);
     league.setIsActive(false);
     league.setCreationTimestamp(
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")));
@@ -68,7 +69,7 @@ public class LeagueService {
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")));
   }
 
-  public void deleteEmptyLeagues(){
+  public void deleteEmptyLeagues() {
     List<League> allLeagues = leagueRepository.findAll();
     for (League league : allLeagues) {
       if (league.getTeams().isEmpty()) {

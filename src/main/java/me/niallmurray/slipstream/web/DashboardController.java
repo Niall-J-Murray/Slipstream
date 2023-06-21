@@ -54,6 +54,7 @@ public class DashboardController {
     modelMap.addAttribute("teamsInLeague", currentLeague.getTeams());
     modelMap.addAttribute("teamsByPick", teamService.getAllTeamsByNextPick());
     modelMap.addAttribute("allDrivers", driverService.sortDriversStanding());
+    modelMap.addAttribute("isTestLeague", currentLeague.getIsTestLeague());
     modelMap.addAttribute("leagueFull", false);
     modelMap.addAttribute("timeToPick", false);
     modelMap.addAttribute("leagueActive", false);
@@ -67,6 +68,7 @@ public class DashboardController {
       modelMap.addAttribute("teamsByRank", teamService.updateLeagueTeamsRankings(currentLeague));
     } else {
       modelMap.addAttribute("teamLeague", user.getTeam().getLeague());
+      modelMap.addAttribute("isTestLeague", user.getTeam().getLeague().getIsTestLeague());
       modelMap.addAttribute("availableDrivers", driverService.getUndraftedDrivers(user.getTeam().getLeague()));
       modelMap.addAttribute("currentPickNumber", leagueService.getCurrentPickNumber(user.getTeam().getLeague()));
       modelMap.addAttribute("teamsByRank", teamService.updateLeagueTeamsRankings(user.getTeam().getLeague()));
@@ -87,8 +89,10 @@ public class DashboardController {
         modelMap.addAttribute("leagueFull", true);
         modelMap.addAttribute("nextUserPick", teamService.getNextToPick(user.getTeam().getLeague()));
         modelMap.addAttribute("isTestPick", teamService.isTestPick(user.getTeam().getLeague()));
+        modelMap.addAttribute("isTestLeague", user.getTeam().getLeague().getIsTestLeague());
         modelMap.addAttribute("hasTestTeams", teamService.hasTestTeams(user.getTeam().getLeague()));
       }
+
       if (teamService.timeToPick(user.getTeam().getLeague(), user.getTeam().getTeamId())) {
         modelMap.addAttribute("timeToPick", true);
       }
@@ -97,8 +101,16 @@ public class DashboardController {
         modelMap.addAttribute("leagueActive", true);
       }
     }
-
     return "dashboard";
+  }
+
+  @PostMapping("/dashboard/{userId}/toggleTestDraft")
+  public String postToggleTest(@PathVariable Long userId) {
+    User user = userService.findById(userId);
+    League league = user.getTeam().getLeague();
+    league.setIsTestLeague(Boolean.FALSE.equals(league.getIsTestLeague()));
+    leagueService.save(league);
+    return "redirect:/dashboard/" + userId;
   }
 
   @PostMapping("/dashboard/{userId}")
