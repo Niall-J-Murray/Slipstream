@@ -19,7 +19,6 @@ public class LeagueService {
   private DriverService driverService;
 
   public League createLeague() {
-
     deleteEmptyLeagues();
     League league = new League();
     league.setLeagueName("League # " + findNewestLeagueId());
@@ -28,7 +27,6 @@ public class LeagueService {
     league.setIsActive(false);
     league.setCreationTimestamp(
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")));
-
     return leagueRepository.save(league);
   }
 
