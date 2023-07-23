@@ -1,6 +1,9 @@
 package me.niallmurray.slipstream.service;
 
-import me.niallmurray.slipstream.domain.*;
+import me.niallmurray.slipstream.domain.Driver;
+import me.niallmurray.slipstream.domain.League;
+import me.niallmurray.slipstream.domain.Team;
+import me.niallmurray.slipstream.domain.User;
 import me.niallmurray.slipstream.repositories.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +13,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -51,7 +57,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -165,7 +171,7 @@ class TeamServiceTest {
     user4.setUserId(1L);
     user4.setUsername("janedoe");
     teamService.createTeam(user4);
-    verify(leagueService, atLeast(1)).findNewestLeague();
+    verify(leagueService, atLeast(1)).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
     verify(league, atLeast(1)).getTeams();
     verify(league).setActiveTimestamp(Mockito.any());
@@ -194,7 +200,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -367,7 +373,7 @@ class TeamServiceTest {
     user6.setUserId(1L);
     user6.setUsername("janedoe");
     teamService.createTeam(user6);
-    verify(leagueService, atLeast(1)).findNewestLeague();
+    verify(leagueService, atLeast(1)).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
     verify(league, atLeast(1)).getTeams();
     verify(league).setActiveTimestamp(Mockito.any());
@@ -389,7 +395,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -449,7 +455,7 @@ class TeamServiceTest {
     team2.setTeamPoints(10.0d);
     team2.setUser(user2);
     teamService.addOneTeamToLeague(team2);
-    verify(leagueService).findNewestLeague();
+    verify(leagueService).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
   }
 
@@ -470,7 +476,7 @@ class TeamServiceTest {
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
     doNothing().when(leagueService).save(Mockito.any());
-    when(leagueService.findNewestLeague()).thenReturn(league);
+    when(leagueService.findAvailableLeague()).thenReturn(league);
 
     League league2 = new League();
     league2.setActiveTimestamp("Active Timestamp");
@@ -530,7 +536,7 @@ class TeamServiceTest {
     team2.setTeamPoints(10.0d);
     team2.setUser(user2);
     teamService.addOneTeamToLeague(team2);
-    verify(leagueService).findNewestLeague();
+    verify(leagueService).findAvailableLeague();
     verify(leagueService).save(Mockito.any());
     verify(league).getTeams();
     verify(league).setActiveTimestamp(Mockito.any());
