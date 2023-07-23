@@ -784,7 +784,7 @@ class TeamServiceTest {
     league.setLeagueId(1L);
     league.setLeagueName("League Name");
     league.setTeams(new ArrayList<>());
-    assertNull(teamService.getNextToPick(league));
+    assertNull(teamService.getNextToPickName(league));
     verify(teamRepository).findAll();
   }
 
@@ -921,7 +921,7 @@ class TeamServiceTest {
     league5.setLeagueId(1L);
     league5.setLeagueName("League Name");
     league5.setTeams(new ArrayList<>());
-    assertEquals("janedoe", teamService.getNextToPick(league5));
+    assertEquals("janedoe", teamService.getNextToPickName(league5));
     verify(leagueService).getCurrentPickNumber(Mockito.any());
     verify(teamRepository).findAll();
     verify(teamRepository, atLeast(1)).findById(Mockito.<Long>any());
@@ -1060,7 +1060,7 @@ class TeamServiceTest {
     league5.setLeagueId(1L);
     league5.setLeagueName("League Name");
     league5.setTeams(new ArrayList<>());
-    assertNull(teamService.getNextToPick(league5));
+    assertNull(teamService.getNextToPickName(league5));
     verify(leagueService, atLeast(1)).getCurrentPickNumber(Mockito.any());
     verify(teamRepository).findAll();
     verify(teamRepository, atLeast(1)).findById(Mockito.<Long>any());

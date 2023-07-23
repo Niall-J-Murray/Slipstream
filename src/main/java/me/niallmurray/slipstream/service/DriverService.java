@@ -27,20 +27,22 @@ public class DriverService {
       Driver driver = modelMapper.map(driverStanding.driverDTO, Driver.class);
       driver.setStanding(Integer.parseInt(driverStanding.position));
       driver.setPoints(Double.parseDouble(driverStanding.points));
-      driver.setConstructor(driverStanding.constructors.get(0).name);
+      driver.setConstructor(driverStanding.constructors.get(0).name.replace("Team", ""));
       drivers.add(driver);
     }
     return drivers;
   }
 
   public void addDrivers(List<Driver> drivers) {
-    for (Driver driver : drivers) {
-      // Set current champ to car #1
-      if (driver.getCarNumber() == 33) {
-        driver.setCarNumber(1);
-      }
-      if (driverRepository.findByCarNumber(driver.getCarNumber()) == null) {
-        driverRepository.save(driver);
+    if (drivers != null) {
+      for (Driver driver : drivers) {
+        // Set current champ to car #1
+        if (driver.getCarNumber() == 33) {
+          driver.setCarNumber(1);
+        }
+        if (driverRepository.findByCarNumber(driver.getCarNumber()) == null) {
+          driverRepository.save(driver);
+        }
       }
     }
   }

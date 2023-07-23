@@ -1,0 +1,5 @@
+Hi ${name}, it's your turn to pick!
+Click the link below to login and make your draft pick.
+
+Link:
+https://slipstreamf1-production.up.railway.app/login

@@ -29,6 +29,21 @@ class LeagueServiceTest {
   @Autowired
   private LeagueService leagueService;
 
+  private static League createNewLeague(ArrayList<Team> teams) {
+    League league3 = new League();
+    league3.setActiveTimestamp("Active Timestamp");
+    league3.setCreationTimestamp("Creation Timestamp");
+    league3.setIsActive(true);
+    league3.setLeagueId(1L);
+    league3.setLeagueName("League Name");
+    league3.setTeams(teams);
+    return league3;
+  }
+
+  private static League createNewLeague() {
+    return createNewLeague(new ArrayList<>());
+  }
+
   /**
    * Method under test: {@link LeagueService#createLeague()}
    */
@@ -293,22 +308,6 @@ class LeagueServiceTest {
     verify(league2).setLeagueName(Mockito.any());
     verify(league2).setTeams(Mockito.any());
   }
-
-  private static League createNewLeague(ArrayList<Team> teams) {
-    League league3 = new League();
-    league3.setActiveTimestamp("Active Timestamp");
-    league3.setCreationTimestamp("Creation Timestamp");
-    league3.setIsActive(true);
-    league3.setLeagueId(1L);
-    league3.setLeagueName("League Name");
-    league3.setTeams(teams);
-    return league3;
-  }
-
-  private static League createNewLeague() {
-    return createNewLeague(new ArrayList<>());
-  }
-
 
   @Test
   void testGetCurrentPickNumber() {

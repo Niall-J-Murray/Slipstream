@@ -51,10 +51,10 @@
       <hr>
       <div class="row">
         <div class="col-sm-5">
-          <div th:if="${isAdmin}">
+          <div th:if="${isAdmin == true}">
             <h3 th:text="|Sorry, admin cannot play!|"></h3><br>
           </div>
-          <div th:if="${!isAdmin}">
+          <div th:if="${isAdmin != true}">
             <div th:if="${user.team} != null">
               <p th:text="|Your team: '${user.team.teamName}'|"></p>
               <p th:text="|Random 1st pick draft number (1-10): ${user.team.firstPickNumber}|"></p>
@@ -104,8 +104,9 @@
                     th:text="|It's your turn to pick ${user.username}!|"></h4>
               </div>
               <div th:if="${leagueActive}">
-                <h3>Your league is active!</h3>
-                <h3>Check back after each race to see your ranking.</h3>
+                <h3 style="color: #2ea44f; text-decoration-line: underline">Your league is active!</h3>
+                <h5 th:text="|Points will be scored from races after league activation date: ${teamLeague.activeTimestamp.substring(0,8)}|"></h5>
+                <h5>Check back after each race to see your ranking.</h5>
                 <hr>
                 <form action="" method="POST" onsubmit=" return confirm('Are you sure you want to delete your team?')"
                       th:action="@{/dashboard/{userId}/deleteTeam (userId=${user.userId})}"
@@ -145,7 +146,7 @@
                     <div class="form-group">
                       <label for="teamName">Team Name (cannot be blank):</label>
                       <input id="teamName" name="teamName" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$"
-                             required th:field="*{team.teamName}" th:placeholder="|Team ${user.username}|" type="text"/>
+                             required th:field="*{team.teamName}" th:placeholder="|${user.username} F1|" type="text"/>
                       <div class="error-message" id="team-name-message" th:if="${param.error != null}">
                         Sorry, that team name is already taken
                       </div>
@@ -161,10 +162,10 @@
           </div>
         </div>
         <div class="col-sm-7">
-          <div th:if="${isAdmin}">
+          <div th:if="${isAdmin == true}">
             <h3><a href="/admin">Go to admin dashboard</a></h3>
           </div>
-          <div th:if="${!isAdmin}">
+          <div th:if="${isAdmin != true}">
             <h5>Reminders</h5>
             <ul class="text-block">
               <li>When you create a team, it is automatically added to the current open league, as shown below.</li>
@@ -189,7 +190,7 @@
   </div>
 
   <div id="test-box" style="display:block;">
-    <div th:if="${!isAdmin}">
+    <div th:if="${isAdmin != true}">
       <div th:if="${user.team.teamName} != null">
         <div th:if="${!leagueActive and !leagueFull and !isTestLeague}">
           <div class="container d-flex justify-content-center" id="practice-league-form">
@@ -300,18 +301,17 @@
     </div>
   </div>
 
-
   <div class="container" th:if="${!leagueActive}">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-5">
         <table class="table caption-top league-table">
           <caption>
             <h3 th:text="${teamLeague.leagueName}"></h3>
           </caption>
-          <th>Player</th>
-          <th>Team</th>
-          <th>1st Pick</th>
-          <th>2nd Pick</th>
+          <th>User<br>Name</th>
+          <th>Team<br>Name</th>
+          <th style="width: 4em">1st<br>Pick</th>
+          <th style="width: 4em">2nd<br>Pick</th>
           <tr th:each="team : ${teamsByRank}">
             <td th:text="${team.user.username}"></td>
             <td>[[${team.getTeamName()}]]</td>
@@ -320,7 +320,7 @@
           </tr>
         </table>
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-7">
         <table class="table caption-top league-table">
           <caption><h3>Undrafted Drivers -
             <small>[[| (${availableDrivers.size()}/20 remaining)|]]</small></h3>
@@ -340,11 +340,10 @@
               <th id="confirm-test-pick" th:if="${leagueFull and isTestPick}">
                 <button class="btn btn-success" id="test-pick-button" type="submit">Make Test Pick</button>
               </th>
-              <th>Driver</th>
-              <th>Rank</th>
-              <th>Points</th>
+              <th style="width: 9em">Driver</th>
+              <th style="width: 5em">Rank</th>
+              <th style="width: 5em">Points</th>
               <th>Nationality</th>
-              <th>Car#</th>
               <th>Constructor</th>
               <tr th:each="driverInfo : ${availableDrivers}">
                 <td th:if="${leagueFull and !timeToPick and !isTestPick}">
@@ -379,7 +378,6 @@
                 <td th:text="${driverInfo.standing}"></td>
                 <td th:text="${driverInfo.points.intValue()}"></td>
                 <td th:text="${driverInfo.nationality}"></td>
-                <td th:text="${driverInfo.carNumber}"></td>
                 <td th:text="${driverInfo.constructor}"></td>
               </tr>
             </form>
@@ -391,15 +389,15 @@
 
   <div class="container" th:if="${leagueActive}">
     <div class="row">
-      <div class="col-sm-5">
-        <table class="table caption-top league-table">
+      <div class="col-sm-6">
+        <table class="table caption-top league-table" id="player-standings">
           <caption><h3 th:text="|${teamLeague.leagueName} Standings|"></h3></caption>
-          <th>Rank</th>
-          <th>Points</th>
-          <th>Player</th>
-          <th>Team</th>
-          <th>Pick 1</th>
-          <th>Pick 2</th>
+          <th style="width: 5em">Rank</th>
+          <th style="width: 5em">Points</th>
+          <th style="width: 9em">Player</th>
+          <th style="width: 9em">Team</th>
+          <th style="width: 5em">Pick 1</th>
+          <th style="width: 5em">Pick 2</th>
           <tr th:each="team : ${teamsByRank}">
             <td>[[${team.getRanking()}]]</td>
             <!--          Only display decimal point in rare case where drivers get half a point.-->
@@ -417,9 +415,9 @@
         <div th:if="${availableDrivers.size()>0}">
           <table class="table caption-top league-table">
             <caption><h3>Drivers from Deleted Teams</h3></caption>
-            <th>Points</th>
-            <th>Driver</th>
-            <th>Constructor</th>
+            <th style="width: 5em">Points</th>
+            <th style="width: 9em">Driver</th>
+            <th style="width: 9em">Constructor</th>
             <tr th:each="driverInfo : ${availableDrivers}">
               <td th:text="${driverInfo.points.intValue()}"></td>
               <td th:text="${driverInfo.surname}"></td>
@@ -428,14 +426,14 @@
           </table>
         </div>
       </div>
-      <div class="col-sm-7">
+      <div class="col-sm-6">
         <table class="table caption-top league-table">
           <caption><h3>F1 Drivers Championship</h3></caption>
-          <th>Rank</th>
-          <th>Points</th>
+          <th style="width: 5em">Rank</th>
+          <th style="width: 5em">Points</th>
           <th>Driver</th>
           <th>Nationality</th>
-          <th>Constructor:</th>
+          <th>Constructor</th>
           <tr th:each="driverInfo : ${allDrivers}">
             <td th:text="${driverInfo.standing}"></td>
             <!--          Only display decimal point in rare case where drivers get half a point.-->
