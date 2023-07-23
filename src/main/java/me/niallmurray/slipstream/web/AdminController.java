@@ -67,7 +67,7 @@ public class AdminController {
   }
 
   @PostMapping("/admin/addDrivers")
-  public String getAddDrivers(ModelMap modelMap) {
+  public String postAddDrivers(ModelMap modelMap) {
     driverService.addDrivers(getDriversFromResponse());
 
     modelMap.addAttribute("allDrivers", driverService.sortDriversStanding());
@@ -78,11 +78,12 @@ public class AdminController {
   // if admin role has not already added drivers.
   // Admin can manually add drivers using PostMapping above.
   public void addDrivers() {
-    driverService.addDrivers(getDriversFromResponse());
+    List<Driver> latestStandings = getDriversFromResponse();
+    driverService.addDrivers(latestStandings);
   }
 
   @PostMapping("/admin/updateDrivers")
-  public String getUpdateDriverStandings(ModelMap modelMap) {
+  public String postUpdateDriverStandings(ModelMap modelMap) {
     driverService.updateDrivers(getDriversFromResponse());
 
     for (League league : leagueService.findAll()) {
