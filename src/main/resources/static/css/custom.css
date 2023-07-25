@@ -121,7 +121,7 @@ input[type='radio'] {
     table-layout: fixed;
 }
 
-#player-standings {
+#player-standings{
     margin: 0 1%;
     border-collapse: separate;
     width: 100%;
