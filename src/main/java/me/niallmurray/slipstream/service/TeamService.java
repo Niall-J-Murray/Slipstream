@@ -169,11 +169,21 @@ public class TeamService {
     List<Team> teams = league.getTeams();
     for (Team team : teams) {
       // Update existing teams with drivers who have been replaced.
-      // So far only 1 (de Vries) has been replaced (by Ricciardo).
+      // So far only 1 (de Vries #21) has been replaced (by Ricciardo #3), who was then replaced (by Lawson #40).
       if (team.getDrivers().contains(driverService.findByCarNumber(21))) {
         team.getDrivers().remove(driverService.findByCarNumber(21));
-        team.getDrivers().add(driverService.findByCarNumber(3));
+        team.getDrivers().remove(driverService.findByCarNumber(3));
+        team.getDrivers().add(driverService.findByCarNumber(40));
       }
+//      if (team.getDrivers().contains(driverService.findByCarNumber(21))) {
+//        team.getDrivers().remove(driverService.findByCarNumber(21));
+//        team.getDrivers().add(driverService.findByCarNumber(3));
+//      }
+//      if (team.getDrivers().contains(driverService.findByCarNumber(40))) {
+//        team.getDrivers().remove(driverService.findByCarNumber(40));
+//        team.getDrivers().add(driverService.findByCarNumber(3));
+//      }
+
       Double totalDriverPoints = team.getDrivers().stream()
               .mapToDouble(Driver::getPoints).sum();
       team.setTeamPoints(totalDriverPoints - team.getStartingPoints());

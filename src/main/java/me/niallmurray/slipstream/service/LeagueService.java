@@ -58,7 +58,8 @@ public class LeagueService {
     if (league.getTeams().size() == 10 && undraftedDrivers.isEmpty()) {
       activateLeague(league);
     }
-    return 21 - undraftedDrivers.size();
+    // 22 drivers took part in season (20 plus 2 subs).
+    return 22 - undraftedDrivers.size();
   }
 
   public void activateLeague(League league) {

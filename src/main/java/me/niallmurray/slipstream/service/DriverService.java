@@ -61,8 +61,9 @@ public class DriverService {
 
   public List<Driver> getUndraftedDrivers(League league) {
     List<Driver> undraftedDrivers = driverRepository.findAllByOrderByStandingAsc();
-    // Remove fired de Vries from pick options.
+    // Remove fired de Vries and Ricciardo from pick options.
     undraftedDrivers.remove(driverRepository.findByCarNumber(21));
+    undraftedDrivers.remove(driverRepository.findByCarNumber(3));
     List<Team> teams = league.getTeams();
     for (Team team : teams) {
       List<Driver> drivers = team.getDrivers();
