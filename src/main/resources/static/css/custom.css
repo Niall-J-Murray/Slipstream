@@ -130,16 +130,10 @@ input[type='radio'] {
     table-layout: fixed;
 }
 
-/*#drivers-in-team{*/
-/*    margin: 0;*/
-/*    color: blue;*/
-/*}*/
-
 .league-table td,
 .league-table th,
 .league-table caption {
     border: 1px solid white;
-
 }
 
 .league-table tr:nth-child(odd),
